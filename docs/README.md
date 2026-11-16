@@ -23,6 +23,6 @@ Use this page to find project instructions by task. The [project handbook](PROJE
 
 ## Evidence and artifacts
 
-The [`reports/`](../reports/) folder contains the [QA report](../reports/FINAL_QA_REPORT.md), [business insights](../reports/PROJECT_INSIGHTS.md), [EDA report](../reports/EDA_FINAL_REPORT.md), generated charts, profiling outputs, and validation tables. The Power BI file and specifications are under [`powerbi/`](../powerbi/); SQL scripts are under [`sql/`](../sql/).
+The [`reports/`](../reports/) folder contains the [executive report for the CEO and shareholders](../reports/OLA_Ride_Insights_Executive_Report.docx), [QA report](../reports/FINAL_QA_REPORT.md), [business insights](../reports/PROJECT_INSIGHTS.md), [EDA report](../reports/EDA_FINAL_REPORT.md), generated charts, profiling outputs, and validation tables. The Power BI file and specifications are under [`powerbi/`](../powerbi/); SQL scripts are under [`sql/`](../sql/).
 
 **Keep in mind:** available data covers July 2024 only. Source amount, distance, and turnaround-time units are not defined. Read the [interpretation rules](PROJECT_DOCUMENTATION.md#interpretation-rules) before presenting findings.

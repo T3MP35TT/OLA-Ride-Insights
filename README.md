@@ -23,7 +23,7 @@ The pipeline writes `data/processed/ola_cleaned.csv`; the source workbook remain
 - `sql/`: MySQL 8 schema, loading, validation, and analytics scripts.
 - `powerbi/`: PBIX report and supporting specifications.
 - `notebooks/`: consolidated analysis notebook.
-- `reports/`: findings, QA evidence, quality outputs, and charts.
+- `reports/`: executive report, findings, QA evidence, quality outputs, and charts.
 - `docs/`: installation, user, data, SQL, deployment, and evaluation documentation.
 
 ## Data interpretation
