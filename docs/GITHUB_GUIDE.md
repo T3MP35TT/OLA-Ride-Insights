@@ -1,17 +1,29 @@
 # GitHub repository setup
 
-The Git executable was not available in this environment, so this directory is prepared for GitHub but has not been initialized, committed or pushed.
+This guide covers publishing the local project to a GitHub repository. Before pushing, review data redistribution rights and remove credentials or private report material.
 
-After installing Git for Windows, open PowerShell at the project root. Confirm the source workbook may be shared before adding it; it is large and may contain restricted data. The `.gitignore` excludes `.env`, secrets, virtual environments and PBIX files.
+## Before the first push
+
+- Confirm that `data/OLA_DataSet.xlsx` and processed outputs may be shared. If not, keep them out of Git and provide an approved local or private runtime data source.
+- Inspect `.gitignore` and run `git status` before committing. It excludes virtual environments, Python cache files, and Streamlit secrets, but does not currently exclude the workbook, processed CSV, or PBIX file.
+- Do not commit credentials, secret tokens, or restricted Power BI content. Add ignore rules appropriate to your organization before staging sensitive files.
+- Create an empty repository on GitHub and copy its remote URL.
+
+## Initialize and push
+
+From the project root in PowerShell:
 
 ```powershell
 git init
+git status
 git add .
 git status
-git commit -m "Build OLA Ride Insights analytics capstone"
+git commit -m "Build OLA Ride Insights analytics project"
 git branch -M main
-git remote add origin https://github.com/<your-user>/OLA-RIDE-INSIGHTS.git
+git remote add origin https://github.com/<your-user>/<repository>.git
 git push -u origin main
 ```
 
-Create the empty GitHub repository first. Do not commit credentials or private Power BI files. If the raw workbook cannot be redistributed, keep it out of Git and update the documented local data path or use an approved private data source.
+Review the staged file list before `git commit`. If a restricted file was staged, unstage it and add a suitable ignore rule before continuing.
+
+For deployment after publishing, see the [deployment guide](DEPLOYMENT_GUIDE.md).

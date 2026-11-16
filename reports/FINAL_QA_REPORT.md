@@ -34,7 +34,7 @@
 ## Not executed / remaining limits
 
 - No MySQL server/client was installed or configured. Required query statements ran in SQLite-compatible mode, not against MySQL 8; `LOAD DATA LOCAL INFILE` is prepared but requires an authorized MySQL instance and a path adjustment.
-- No Power BI Desktop/account was available. Model, DAX and layout specifications are prepared; a PBIX was not created or published.
+- A PBIX artifact is present in `powerbi/`, but Power BI Desktop/account validation, refresh verification, and publication were not performed in the recorded QA.
 - No Git executable was available. Repository initialization, commits and remote push were not performed.
 - Streamlit Community Cloud deployment and Power BI embedding require user-owned external accounts and were not performed.
 - The data covers July 2024 only. Booking value is not confirmed accounting revenue; currency/distance/TAT units are not specified.

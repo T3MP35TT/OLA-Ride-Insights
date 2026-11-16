@@ -68,7 +68,7 @@ Average observed customer rating: 4.00; average observed driver rating: 4.00. Bo
 
 ## Power BI dashboard findings
 
-The five-section dashboard layout, model and DAX are specified in `powerbi/`. A PBIX has not been created or published; the specifications are not a completed report.
+A PBIX artifact is present at `powerbi/OLA RIDE INSIGHTS.pbix`, alongside dashboard specifications. Its data source, refresh state, and publication status must be confirmed in the target Power BI environment before use.
 
 ## Business recommendations
 

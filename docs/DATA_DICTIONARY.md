@@ -1,5 +1,7 @@
 # Data dictionary
 
+This profile describes the supplied workbook and its current pipeline output. The pipeline regenerates this file; review its contents after changing the source workbook.
+
 Source: first worksheet of `data/OLA_DataSet.xlsx`. Currency and distance/TAT units are not defined in the supplied materials. Cancellation columns contain reason text, not yes/no flags.
 
 | Source column | Type | Missing | Distinct | Meaning |

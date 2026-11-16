@@ -1,5 +1,21 @@
-# User guide
+# Streamlit user guide
 
-Generate outputs by running the pipeline first, then launch Streamlit. Every page is directly visible as a button in the sidebar, grouped under Executive, Operations, Revenue, Data Tools and Integrations; the active page is highlighted and a divider separates navigation from live context. The sidebar context reflects current filters, executed SQL summaries and data-management actions. The app uses the OLA logo and lime/charcoal theme. The enlarged page title uses a translucent branded panel, and charts use the OLA palette in titled cards. Executive overview provides filters and a board snapshot of conversion, unsuccessful demand, driver availability losses, completed booking value, hourly outcomes, vehicle conversion, payment mix and pickup zones with unmatched demand. Figures describe the selected period; only July 2024 is supplied, so no month-over-month comparisons or causal claims are made. Data provenance documents the source-to-insight path, pipeline policy, current file status and interpretation boundaries; see [DATA_PROVENANCE.md](DATA_PROVENANCE.md). Rides, revenue, cancellations and ratings provide deeper interactive analysis; Data Management filters by status and vehicle, searches across columns and exports filtered records. Its Read, Create, Update and Delete views operate on `data/managed/ola_managed.csv`, preserving the cleaned baseline. Changes are recorded in `reports/data_management_audit.csv` (both files are git-ignored). Restore the managed copy from the cleaned baseline using the confirmation control.
+Start the app with `streamlit run app.py` after following the [installation guide](INSTALLATION_GUIDE.md). The sidebar links to eight views: Executive overview, Ride analysis, Cancellations, Ratings, Revenue, SQL Explorer, Data Management, and Power BI.
 
-SQL Explorer numbers its ten reviewed questions and also provides a custom SQL option. Editing or selecting SQL does not execute it: click **Run SQL Query** below the editor to run. Answers include summary metrics, a chart builder with configurable grouping/measure/aggregation/view, an underlying data table and CSV download. The local SQL engine accepts one read-only `SELECT` or `WITH` query against the `bookings` table, blocks writes and limits results to 10,000 rows. Configure Power BI only with an approved embed URL. Review the SQL files separately for MySQL execution.
+## Analytics views
+
+Use the page filters to select the relevant dates, booking outcomes, vehicle types, or other available categories. Charts and summary metrics describe the selected data. The supplied source covers July 2024, so the dashboard cannot support comparisons with other months unless additional data is added.
+
+The Executive overview summarizes booking outcomes, completed booking value, time patterns, vehicle and payment mix, and location patterns. Ride analysis, Cancellations, Ratings, and Revenue provide more focused views. Keep the [interpretation rules](PROJECT_DOCUMENTATION.md#interpretation-rules) in mind when presenting results.
+
+## Data Management
+
+The data tools support browsing, filtering, searching, exporting, and CRUD operations. Changes are written to `data/managed/ola_managed.csv`, a separate working copy. The cleaned baseline remains the reproducible pipeline output. App changes are recorded in `reports/data_management_audit.csv`; use the restore control to recreate the managed copy from the baseline.
+
+## SQL Explorer
+
+Choose one of the ten reviewed business questions or edit the query. Editing alone does not run it; use **Run SQL Query**. Results include relevant summaries, a chart/table view, and CSV export. The local engine accepts one read-only `SELECT` or `WITH` query against `bookings`; it allows up to 250,000 returned rows and an eight-second execution window. See [SQL documentation](SQL_DOCUMENTATION.md) for column mappings and limits.
+
+## Power BI
+
+The Power BI view embeds the configured report URL. Access depends on the report's publication and permission settings. Confirm that the displayed report reflects the intended source and refresh before using it for decisions; see [deployment](DEPLOYMENT_GUIDE.md).

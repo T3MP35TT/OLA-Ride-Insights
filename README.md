@@ -1,8 +1,10 @@
 # OLA Ride Insights
 
-End-to-end ride analytics using the supplied workbook, with a reproducible pandas pipeline, SQL assets, Power BI build specifications and a Streamlit data management and analytics app.
+An end-to-end ride analytics project built around the supplied OLA booking workbook. It includes a reproducible pandas pipeline, Streamlit analytics app, SQL assets, a Power BI report artifact, and supporting analysis and QA outputs.
 
-## Run locally
+## Quick start
+
+Place `OLA_DataSet.xlsx` in `data/` (or the project root), then run from PowerShell:
 
 ```powershell
 python -m venv .venv
@@ -12,29 +14,22 @@ python -m src.ola_ride_insights.pipeline
 streamlit run app.py
 ```
 
-Source workbook: `data/OLA_DataSet.xlsx` (kept unchanged). Processed output: `data/processed/ola_cleaned.csv`. The app reads the processed CSV or falls back to the workbook in `data/` or the project root.
+The pipeline writes `data/processed/ola_cleaned.csv`; the source workbook remains unchanged. The app uses the processed data and can fall back to the workbook. Installation details are in [docs](docs/README.md).
 
 ## Project map
 
-- `src/ola_ride_insights/pipeline.py`: workbook profiling, cleaning and derived fields.
-- `app.py`: Streamlit entry point and dynamic page router.
-- `pages/`: all dashboard page modules in one folder (`overview.py`, `rides.py`, `cancellations.py`, `ratings.py`, `revenue.py`, `sql_explorer.py`, `data_management.py`, `power_bi.py`).
-- `utils/`: OLA theme, dynamic sidebar, source field mapping, chart styling and predefined SQL query logic.
-- `utils/sql_engine.py`: in-memory, read-only SQL execution against the `bookings` table.
-- `utils/charts.py`: shared OLA chart/table cards with chart-specific key insights.
-- `notebooks/OLA_Ride_Insights_Analysis.ipynb`: consolidated business framing, source QA, cleaning, feature engineering, univariate/bivariate/multivariate EDA and recommendations.
-- `pages/data_management.py`: CRUD operations against an isolated managed copy; the cleaned baseline remains unchanged.
-- `images/Ola-Cabs-Logo.png`: brand image used in the app header and sidebar.
-- `sql/`: MySQL 8 schema, required and additional analytics queries.
-- `powerbi/`: model, DAX and dashboard specifications. No PBIX was supplied or generated.
-- `reports/`, `docs/`, `notebooks/`, `presentation/`: analysis and handoff material.
+- `src/ola_ride_insights/`: profiling, cleaning, feature engineering, and EDA pipeline.
+- `app.py`, `pages/`, `utils/`: Streamlit entry point, views, and shared helpers.
+- `sql/`: MySQL 8 schema, loading, validation, and analytics scripts.
+- `powerbi/`: PBIX report and supporting specifications.
+- `notebooks/`: consolidated analysis notebook.
+- `reports/`: findings, QA evidence, quality outputs, and charts.
+- `docs/`: installation, user, data, SQL, deployment, and evaluation documentation.
 
-See [installation](docs/INSTALLATION_GUIDE.md), [deployment](docs/DEPLOYMENT_GUIDE.md), [source review](docs/SOURCE_MATERIAL_ANALYSIS.md), and [QA status](reports/FINAL_QA_REPORT.md).
+## Data interpretation
 
-Dashboard charts and tables include descriptive key insights. Data Management contains the source provenance details alongside its managed-copy controls. SQL Explorer returns complete source-sized results, previews up to 500 rows, and exports the full result as CSV.
+The supplied dataset covers July 2024. `Driver Not Found` is reported separately from cancellations. Booking value is not confirmed recognized revenue; distance and turnaround-time units are unspecified. Read [data provenance](docs/DATA_PROVENANCE.md) and the [project handbook](docs/PROJECT_DOCUMENTATION.md) before presenting findings.
 
-## Verified source findings
+## Current verification
 
-The source has 103,024 rows from July 2024. Success is 63,967 rows (62.09%); customer cancellations are 10,499 (10.19%); driver cancellations are 18,434 (17.89%); Driver Not Found is 10,124 (9.83%) and is reported separately. Completed booking value for successful rows totals 35,080,467 source units. See `reports/PROJECT_INSIGHTS.md` for the definitions and limitations.
-
-GitHub setup instructions are in `docs/GITHUB_GUIDE.md`; the directory has not been initialized as a Git repository because Git was not available in the environment.
+The recorded QA reports successful local pipeline and Streamlit checks and reconciliation of the ten required SQL questions using SQLite-compatible execution. A live MySQL 8 execution, external deployment, and organization-specific Power BI validation are not recorded. See [final QA](reports/FINAL_QA_REPORT.md).
