@@ -1,0 +1,11 @@
+,count
+negative_booking_value,0
+negative_ride_distance,0
+customer_ratings_outside_0_5,0
+driver_ratings_outside_0_5,0
+booking_id_duplicates,0
+missing_booking_status,0
+unparseable_booking_datetime,0
+missing_customer_ratings,39057
+missing_driver_ratings,39057
+missing_incomplete_reason,99098

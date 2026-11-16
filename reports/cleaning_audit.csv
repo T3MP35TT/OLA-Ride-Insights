@@ -1,0 +1,4 @@
+action,count,policy
+exact duplicate rows removed,0,confirmed exact duplicate only
+rows with duplicate booking ID,0,retained for investigation; not assumed duplicates
+presentation-only icon columns excluded,1,source workbook remains unchanged

@@ -1,0 +1,11 @@
+query,rows_returned,columns
+1,63967,booking_id; customer_id; vehicle_type; booking_status; booking_value; payment_method; ride_distance
+2,7,vehicle_type; average_ride_distance; trips_with_distance
+3,1,customer_cancellations
+4,5,customer_id; bookings
+5,1,driver_personal_car_cancellations
+6,1,maximum_driver_rating; minimum_driver_rating
+7,25881,booking_id; customer_id; vehicle_type; booking_value; payment_method
+8,7,vehicle_type; average_customer_rating; rated_trips
+9,1,completed_booking_value
+10,3926,booking_id; customer_id; incomplete_rides_reason

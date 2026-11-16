@@ -1,0 +1,2 @@
+USE ola_ride_insights;
+CREATE OR REPLACE VIEW vw_booking_kpis AS SELECT date, vehicle_type, booking_status, payment_method, COUNT(*) AS booking_count, SUM(booking_value) AS total_booking_value, SUM(CASE WHEN LOWER(TRIM(booking_status))='success' THEN booking_value ELSE 0 END) AS completed_booking_value, AVG(ride_distance) AS avg_distance, AVG(customer_rating) AS avg_customer_rating, AVG(driver_ratings) AS avg_driver_rating FROM bookings GROUP BY date, vehicle_type, booking_status, payment_method;
