@@ -18,105 +18,273 @@
 </p>
 
 ---
+# 🚕 OLA Ride Insights — Ride-Booking Analytics & Decision Support Platform
 
-## Why this project
+OLA Ride Insights is an end-to-end ride-sharing analytics project that combines **Python, SQL, Power BI, Streamlit, pandas, and statistical analysis** to turn one month of real OLA booking data into operational, revenue, and customer-experience decisions for leadership.
 
-Most portfolio dashboards stop at "here's a chart." This one is built the way a senior analyst would actually hand off work to leadership: a **reproducible pipeline** with logged cleaning decisions, an **exploratory analysis** that tests its own assumptions (and says plainly when they don't hold), a **BI layer** for self-serve exploration, and an **executive report** that states its evidence basis and limitations as clearly as its findings.
+🔗 **Repository:** https://github.com/T3MP35TT/OLA-Ride-Insights
 
-The dataset is 103,024 OLA ride bookings from Bengaluru, covering **July 2024** — four mutually exclusive outcomes (Success, Canceled by Driver, Canceled by Customer, Driver Not Found), 7 vehicle types, and full ride, payment, and rating detail for completed trips.
+## 📌 Project Overview
+
+Every ride booking generates structured data across outcome, vehicle, payment, location, and feedback fields.
+
+OLA Ride Insights transforms 103,024 of those bookings into an analytical product designed to answer questions such as:
+
+- 🚦 What share of bookings actually complete successfully?
+- 🚗 Is cancellation a driver problem, a customer problem, or a dispatch problem?
+- 💰 How much booking value is lost to cancellations, and where does it go?
+- 🏍️ Do vehicle types differ in distance, value, or reliability — or just look different?
+- 📍 Which pickup locations carry the most unmet demand?
+- ⏰ Does time of day or day of week actually move the success rate, or does it only look that way?
+- ⭐ How do customer and driver ratings compare, and where do they diverge?
+- 👥 How concentrated is revenue among a small set of repeat customers?
+
+The project demonstrates the full analyst workflow: profiling → cleaning → feature engineering → statistical testing → BI delivery → an executive-level writeup that states what the data can and can't support.
+
+## 🎯 Business & Analytical Objectives
+
+- Quantify booking success, cancellation, and dispatch-failure rates
+- Separate `Driver Not Found` from cancellations as a distinct serviceability outcome
+- Test whether failure rate actually varies by vehicle, time, or weekday (rather than assuming it)
+- Measure value per kilometre and completed booking value by vehicle and payment method
+- Identify operational hot spots by pickup location
+- Compare customer vs. driver ratings and flag low-sample noise
+- Convert every finding into an interactive, filterable view for non-technical stakeholders
+- Translate the analysis into one scoped, actionable recommendation for a CEO audience
+
+## 📊 Dataset & Key Metrics
 
 | Metric | Value |
-| --- | --- |
-| Bookings analyzed | 103,024 |
-| Success rate | 62.1% |
-| Canceled by Driver | 17.9% |
-| Canceled by Customer | 10.2% |
-| Driver Not Found | 9.8% |
-| Completed booking value | 35.08M (source units; not confirmed revenue) |
+|---|---:|
+| 🚕 Bookings | 103,024 |
+| 📅 Period | 1–31 July 2024 (Bengaluru) |
+| ✅ Success rate | 62.1% |
+| 🚫 Canceled by Driver | 17.9% |
+| 🙅 Canceled by Customer | 10.2% |
+| ❌ Driver Not Found | 9.8% |
+| 🚗 Vehicle types | 7 |
+| 👥 Unique customers | ~94,500 |
+| 💰 Completed booking value | ₹35.08M (source units; not confirmed revenue) |
+| ⭐ Ratings recorded | Successful bookings only — 39,057 bookings have none |
 
-**Headline finding:** failure modes don't cluster by vehicle type, day of week, or time of day — chi-square tests on all three return Cramér's V under 0.02. The reliability problem is close to uniform across the operation, which reframes it from "which segment is broken" to "fix dispatch and pickup reliability everywhere." Full reasoning and caveats are in the [executive report](reports/OLA_Ride_Insights_Executive_Report.pdf) and [EDA report](reports/EDA_FINAL_REPORT.md).
+**Headline finding:** failure modes don't cluster by vehicle type, time of day, or day of week — chi-square tests on all three return Cramér's V under 0.02. The reliability problem is close to uniform across the operation, which reframes the question from *"which segment is broken"* to *"fix dispatch and pickup reliability everywhere."*
 
-## What's inside
+## 🧠 Analytical Framework
 
-| Layer | What it does | Where |
-| --- | --- | --- |
-| **Pipeline & EDA notebook** | Profiles the raw workbook, documents every cleaning decision, engineers time/outcome/distance features, runs univariate → bivariate → multivariate analysis with significance tests | [`notebooks/OLA_Ride_Insights_Analysis.ipynb`](notebooks/OLA_Ride_Insights_Analysis.ipynb), [`src/ola_ride_insights/`](src/ola_ride_insights) |
-| **SQL layer** | Schema, load, indexing, validation, and the 10 required + advanced business questions, runnable on MySQL 8 or SQLite | [`sql/`](sql) |
-| **Power BI report** | 5-page executive dashboard (Overview, Ride & Vehicle, Booking Value & Customer, Cancellations, Ratings) on a star schema with 49 DAX measures | [`powerbi/OLA RIDE INSIGHTS.pbix`](powerbi) |
-| **Streamlit app** | 8-page interactive app: the BI views, plus a live SQL explorer and a sandboxed CRUD page over a managed copy of the data | [`app.py`](app.py), [`pages/`](pages) |
-| **Executive report** | 8-page leadership readout: scope, evidence basis, findings, a single scoped recommendation, and stated limitations | [`reports/OLA_Ride_Insights_Executive_Report.pdf`](reports/OLA_Ride_Insights_Executive_Report.pdf) |
+### 🚦 Booking Outcome Analytics
+Success, cancellation, and Driver Not Found rates, each using the full booking base as the denominator so a status filter can't distort a rate.
 
-## Quick start
+### 🚗 Ride & Vehicle Analytics
+Completed distance, average distance, and value-per-kilometre by vehicle — because raw booking counts across vehicles are nearly identical (14.5–14.9K each) and hide the real differences.
 
-**Requirements:** Python 3.11+, the source workbook `OLA_DataSet.xlsx` in `data/`.
+### 💰 Booking Value & Customer Analytics
+Completed value by payment method, one-time vs. repeat customers, lost booking value by failure status, and concentration among top customers.
+
+### 🚫 Cancellation Analytics
+Customer vs. driver cancellation reasons, rates by vehicle and location, and a decomposition of unsuccessful bookings by status → reason → vehicle → location.
+
+### ⭐ Ratings & Experience Analytics
+Customer and driver rating distributions, paired comparisons by vehicle and time of day, with a minimum-sample filter so low-volume locations don't masquerade as ranked outliers.
+
+## 🔎 SQL Analytics — Required & Advanced Queries
+
+### 🟢 Required business questions
+
+| Query | Analytical Focus |
+|---|---|
+| Q1 | All successful bookings |
+| Q2 | Mean ride distance and sample count by vehicle |
+| Q3 | Customer cancellation rate |
+| Q4 | Top five customers by booking count |
+| Q5 | Driver cancellations with specific reason terms |
+| Q6 | Observed Prime Sedan driver-rating range |
+| Q7 | All UPI bookings |
+| Q8 | Average customer rating and feedback count by vehicle |
+| Q9 | Completed booking value (flagged as a value proxy, not revenue) |
+| Q10 | Incomplete rides, using the source indicator rather than booking status |
+
+### 🟡 Advanced analytical queries
+
+Ten further queries build on the required set: booking-mix summary (success/cancel/DNF in one pass), booking value and average distance by vehicle, completed value by payment method, top-five customers by value, daily and monthly ride volume, hourly booking distribution, customer vs. driver cancellation rate side by side, average ratings by vehicle, and a unified cancellation-reason breakdown across both sides.
+
+Every SQL result is reconciled against the Python/pandas pipeline output — see `reports/sql_python_reconciliation.csv` and `reports/sql_query_validation.csv`.
+
+## 🛡️ Data Quality & Defensive Analytics
+
+- **One month only.** The four month-over-month DAX measures will read blank — there's no second month to compare against. Daily and weekly views are used instead.
+- **`Driver Not Found` is never folded into cancellations**, in the pipeline, SQL, or BI layer — it's a distinct serviceability outcome.
+- **Ratings are missing, not zero**, for every non-successful booking (39,057 rows) — preserved as missing rather than imputed.
+- **Vehicle and weekday differences are statistically weak** (Cramér's V < 0.02 across the board) — the dashboard favors rates over rankings so uniform noise doesn't get read as a pattern.
+- **Booking value is a proxy**, not confirmed accounting revenue; ride-distance and turnaround-time units are unspecified in the source.
+
+Full reasoning: [`reports/EDA_FINAL_REPORT.md`](reports/EDA_FINAL_REPORT.md) and [`docs/DATA_PROVENANCE.md`](docs/DATA_PROVENANCE.md).
+
+## 🎨 Dashboard Experience
+
+### 📊 Power BI (5 pages)
+Executive Overview, Ride & Vehicle Analysis, Booking Value & Customer Analysis, Cancellation Analysis, Ratings & Customer Experience — a single star schema, synced date/vehicle/status slicers, and 49 DAX measures.
+
+### ⚡ Streamlit (8 pages)
+Executive Overview, Ride Analysis, Revenue, Cancellations, Ratings, **SQL Explorer** (a real, sandboxed, read-only query engine over the dataset — not canned output), **Data Management** (CRUD over an isolated copy), and an embedded **Power BI** view so both layers live in one app.
+
+## 🛠️ CRUD & Database Operations
+
+The Data Management page runs full create / read / update / delete operations against a managed copy of the dataset, isolated from the cleaned baseline used everywhere else, so a demo edit never contaminates the analysis.
+
+## 🗄️ Data Architecture
+
+```text
+Bookings          — fact table, booking grain
+Calendar          — date dimension, related 1:many to Bookings
+Measures          — 49 DAX measures (hidden table): Success Rate, Completed
+                    Booking Value, Cancellation Rates, Top-N rankings, etc.
+```
+
+## 🔄 Data Pipeline
+
+```text
+📄 OLA_DataSet.xlsx (raw workbook)
+        ↓
+🛡️ Profiling & data-quality checks
+        ↓
+🧹 Cleaning (missing ratings preserved, outliers flagged not removed)
+        ↓
+🧮 Feature engineering (datetime, outcome flags, distance quartile, time-of-day)
+        ↓
+📊 Exploratory analysis (univariate → bivariate → multivariate, with significance tests)
+        ↓
+       ┌──────────────┬──────────────────┐
+       ▼              ▼                  ▼
+  🗄️ SQLite/MySQL  📈 Power BI (.pbix)  ⚡ Streamlit app
+       │
+       ▼
+  📝 Executive report (PDF)
+```
+
+## 💻 Technical Stack
+
+| Technology | Purpose |
+|---|---|
+| 🐍 Python | Pipeline, feature engineering, EDA |
+| 🐼 pandas / NumPy | Data cleaning and transformation |
+| 📓 Jupyter | Annotated end-to-end analysis notebook |
+| 🔎 SQL (MySQL 8 / SQLite) | Schema, loading, validation, business queries |
+| 📊 Power BI + DAX | 5-page executive report, 49 measures |
+| ⚡ Streamlit | 8-page interactive app |
+| 📝 python-docx / python-pptx | Executive report and slide generation |
+| 🌿 Git / GitHub | Version control |
+
+## 📊 Data Analyst Skills Demonstrated
+
+**SQL:** filtering, aggregation, `GROUP BY`, `CASE` logic, rate calculations, multi-query reconciliation against Python output.
+
+**Python:** pandas-based cleaning and validation, feature engineering with regression tests, statistical significance testing (chi-square, Cramér's V, Spearman correlation).
+
+**BI & visualization:** star-schema modeling, DAX measure design, cross-filtered dashboards, KPI cards, decomposition trees.
+
+**Analytics judgment:** distinguishing a real pattern from a calendar or sampling artifact, stating evidence limits instead of overclaiming, scoping a recommendation to what the data actually supports.
+
+## 📁 Project Structure
+
+```text
+OLA Ride Insights project/
+│
+├── app.py, pages/, utils/        Streamlit entry point, 8 pages, shared helpers
+│
+├── src/ola_ride_insights/        Profiling, cleaning, feature engineering, EDA pipeline
+│
+├── sql/
+│   ├── 01_create_database.sql
+│   ├── 02_create_tables.sql
+│   ├── 03_load_data.sql
+│   ├── 04_indexes.sql
+│   ├── 05_data_validation.sql
+│   ├── 06_required_business_queries.sql
+│   ├── 07_advanced_business_queries.sql
+│   ├── 08_powerbi_views.sql
+│   └── 09_validation_queries.sql
+│
+├── powerbi/
+│   └── OLA RIDE INSIGHTS.pbix     5-page executive report
+│
+├── notebooks/
+│   └── OLA_Ride_Insights_Analysis.ipynb
+│
+├── reports/
+│   ├── OLA_Ride_Insights_Executive_Report.pdf
+│   ├── EDA_FINAL_REPORT.md
+│   ├── FINAL_QA_REPORT.md
+│   └── PROJECT_INSIGHTS.md
+│
+├── docs/                          Installation, data, SQL, deployment, evaluation docs
+├── tests/                         pytest coverage for pipeline feature logic
+└── requirements.txt
+```
+
+## 🚀 Getting Started
 
 ```bash
-# macOS / Linux
+git clone https://github.com/T3MP35TT/OLA-Ride-Insights.git
+cd OLA-Ride-Insights
+
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
+
 python -m src.ola_ride_insights.pipeline   # builds data/processed/ola_cleaned.csv
 streamlit run app.py
 ```
 
-```powershell
-# Windows (PowerShell)
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m src.ola_ride_insights.pipeline
-streamlit run app.py
+Place `OLA_DataSet.xlsx` in `data/` first. The pipeline never modifies the source workbook; the app uses the processed extract and falls back to the raw workbook if it's missing.
+
+## 📚 Documentation
+
+| Document | Purpose |
+|---|---|
+| [`docs/INSTALLATION_GUIDE.md`](docs/INSTALLATION_GUIDE.md) | Full setup |
+| [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) | Using the Streamlit app |
+| [`docs/DATA_DICTIONARY.md`](docs/DATA_DICTIONARY.md) | Field-by-field definitions |
+| [`docs/DATA_PROVENANCE.md`](docs/DATA_PROVENANCE.md) | Source, lineage, limitations |
+| [`docs/SQL_DOCUMENTATION.md`](docs/SQL_DOCUMENTATION.md) | Schema and query design |
+| [`docs/DEPLOYMENT_GUIDE.md`](docs/DEPLOYMENT_GUIDE.md) | Running outside local dev |
+| [`docs/PROJECT_DOCUMENTATION.md`](docs/PROJECT_DOCUMENTATION.md) | Full project handbook |
+
+## 💡 Key Design Principles
+
+1. **Evidence before narrative.** The reliability finding came from running chi-square tests, not from eyeballing a chart.
+2. **Separate distinct failure modes.** `Driver Not Found` never gets folded into "cancellation."
+3. **Missing isn't zero.** Ratings on failed bookings are absent, not poor.
+4. **One recommendation, clearly scoped.** The executive report names one decision, not a wish list.
+5. **State the limits.** One month of data, an unconfirmed value field, and unspecified units are said outright, not buried.
+
+## 📈 Why This Project Matters
+
+The workflow — profile, clean, test assumptions instead of assuming them, build for both technical and non-technical audiences, and scope the recommendation to the evidence — applies directly beyond ride-sharing: to support-ticket analysis, retail transaction data, or any operations dataset where leadership needs a decision, not a dashboard tour.
+
+## ⭐ Project Highlights
+
+```text
+🚕 103,024 Bookings  +  📅 1 Month, Bengaluru  +  🚗 7 Vehicle Types
+🔎 20 SQL Queries    +  📊 5-Page Power BI Report (49 DAX measures)
+⚡ 8-Page Streamlit App (live SQL explorer + CRUD)  +  📝 Executive Report
 ```
 
-The pipeline reads the source workbook, writes the cleaned extract to `data/processed/ola_cleaned.csv`, and never modifies the original file. The app runs on the processed extract and falls back to the raw workbook if it's missing. Full setup, including the SQL and Power BI steps, is in the [installation guide](docs/INSTALLATION_GUIDE.md).
+---
 
-## Project structure
+## 👤 Author
 
-```
-.
-├── app.py, pages/, utils/      Streamlit entry point, 8 pages, shared helpers
-├── src/ola_ride_insights/      Profiling, cleaning, feature engineering, EDA pipeline
-├── notebooks/                  Consolidated end-to-end analysis notebook
-├── sql/                        Schema, load, indexing, validation, business-query scripts
-├── powerbi/                    Power BI report (.pbix)
-├── reports/                    Executive report, EDA/QA findings, data-quality outputs, charts
-├── docs/                       Installation, user, data, SQL, deployment, evaluation docs
-└── tests/                      pytest coverage for the pipeline's feature logic
-```
+**Kartikey Singh**
 
-## Data notes — read before presenting these numbers
+**Business Analyst | Power BI | Python | SQL | Excel**
 
-- **Scope:** one month (July 2024) from one city. There is no month-over-month trend in this data, and nothing here should be read as a multi-month pattern.
-- **`Driver Not Found` is kept separate from cancellations**, by design, throughout the pipeline, SQL, and BI layer — it's a distinct serviceability outcome, not a cancellation subtype.
-- **Booking value is not confirmed recognized revenue**, and ride-distance and turnaround-time units are unspecified in the source. Treat value totals as a proxy, not a financial figure.
-- Ratings are only observed for successful bookings (39,057 bookings have none) — missing ratings are preserved as missing, never imputed.
+🔗 LinkedIn: [Kartikey_Singh](https://www.linkedin.com/in/btwitskartiksinghdatanalyst/)
 
-Details and full reasoning: [data provenance](docs/DATA_PROVENANCE.md) · [data dictionary](docs/DATA_DICTIONARY.md) · [project documentation](docs/PROJECT_DOCUMENTATION.md).
+💻 GitHub: [Kartikey_Singh](https://github.com/T3MP35TT)
 
-## Testing & verification
+💼 Portfolio: [Kartikey_Singh](https://sites.google.com/view/kartikeysingh09/home)
 
-Pipeline feature logic is covered by `pytest` (`tests/test_pipeline_features.py`). The recorded QA pass covers a successful local pipeline run, a Streamlit smoke test, and reconciliation of all 10 required SQL business questions against SQLite-compatible execution. A live MySQL 8 run, external deployment, and org-specific Power BI validation are **not** part of the recorded evidence — see the [final QA report](reports/FINAL_QA_REPORT.md) before relying on those paths.
+## 📄 License
 
-```bash
-pytest tests/
-```
+No license file is included yet. Add a `LICENSE` (e.g. MIT or Apache-2.0) before treating this as open source.
 
-## Documentation
-
-| Doc | Covers |
-| --- | --- |
-| [Installation guide](docs/INSTALLATION_GUIDE.md) | Full setup, env vars, MySQL config |
-| [User guide](docs/USER_GUIDE.md) | Using the Streamlit app |
-| [Data dictionary](docs/DATA_DICTIONARY.md) | Field-by-field definitions |
-| [Data provenance](docs/DATA_PROVENANCE.md) | Source, lineage, known limitations |
-| [SQL documentation](docs/SQL_DOCUMENTATION.md) | Schema and query design |
-| [Deployment guide](docs/DEPLOYMENT_GUIDE.md) | Running this outside local dev |
-| [Project documentation](docs/PROJECT_DOCUMENTATION.md) | Full project handbook |
-
-## Author
-
-**Kartikey Singh** — Business Analyst. [GitHub repo](https://github.com/T3MP35TT/OLA-Ride-Insights)
-
-## License
-
-No license file is included yet. If you intend this repo to be reused by others, add a `LICENSE` (e.g. MIT or Apache-2.0) before publishing it as open source.
+⭐ If you find the project useful, consider giving the repository a star.
